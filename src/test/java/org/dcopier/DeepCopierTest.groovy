@@ -26,11 +26,12 @@ class DeepCopierTest {
                 ["Test\ntest"] as Object[],
                 [new Node(index: 1, name: "node1", next: new Node(index: 2, name: "node2"))] as Object[],
                 [new FinalFieldClass(1, 2.0, "ffc1", new FinalFieldClass(2, 5.21, "ffc2", null))] as Object[],
+                [new SerializableClass(another: new FinalFieldClass(1, 2.0, "final", null))] as Object[],
         )
         return a
     }
 
-    private final DeepCopier copier = null
+    private final DeepCopier copier = new Copier()
     @Parameter public source
 
     @Test void test() {
