@@ -8,7 +8,7 @@ public class Copier implements DeepCopier {
     public <T> T copy(T object) {
         DeepCopier delegate = object instanceof Serializable
                 ?  SerializingCopier.getInstance()
-                : null;
+                : MagicCopier.getInstance();
         return delegate.copy(object);
     }
 }
