@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ObjectCopier {
@@ -65,7 +66,7 @@ public class ObjectCopier {
 
         Object copy = U.allocateInstance(aClass);
 
-        Field[] fields = aClass.getDeclaredFields();
+        Field[] fields = getFields(aClass);
         for (Field field : fields) {
             int mods = field.getModifiers();
             if (Modifier.isStatic(mods)) continue;
@@ -74,6 +75,18 @@ public class ObjectCopier {
         }
 
         return copy;
+    }
+
+    private Field[] getFields(Class<?> aClass) {
+        Field[] totalFields = aClass.getDeclaredFields();
+        aClass = aClass.getSuperclass();
+        while (aClass != Object.class) {
+            Field[] fields = aClass.getDeclaredFields();
+            totalFields = Arrays.copyOf(totalFields, totalFields.length + fields.length);
+            System.arraycopy(fields, 0, totalFields, totalFields.length - fields.length, fields.length);
+            aClass = aClass.getSuperclass();
+        }
+        return totalFields;
     }
 
     private void copyField(Object object, Field field, Object copy) throws IllegalAccessException, InstantiationException {
