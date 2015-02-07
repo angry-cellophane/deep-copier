@@ -39,7 +39,7 @@ public class ObjectCopier {
 
     public <T> T copy(T object) {
         try {
-            @SuppressWarnings("uncehcked") T instance = (T) object.getClass().cast(_copy(object, true));
+            @SuppressWarnings("unchecked") T instance = (T) object.getClass().cast(_copy(object, true));
             return instance;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
