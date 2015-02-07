@@ -31,11 +31,10 @@ class DeepCopierTest {
         return a
     }
 
-    private final DeepCopier copier = new Copier()
     @Parameter public source
 
     @Test void test() {
-        def copy = copier.copy(source)
+        def copy = Copier.deepCopy(source)
         assertTrue(!source.is(copy))
         assertTrue(source == copy)
     }

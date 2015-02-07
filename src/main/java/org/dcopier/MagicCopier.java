@@ -5,13 +5,13 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class MagicCopier implements DeepCopier {
+public class MagicCopier<T> implements DeepCopier<T> {
 
     private static class Holder {
         static final MagicCopier INSTANCE = new MagicCopier();
     }
 
-    static MagicCopier getInstance() {
+    static <T> MagicCopier<T> getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -28,7 +28,7 @@ public class MagicCopier implements DeepCopier {
     }
 
     @Override
-    public <T> T copy(T object) {
+    public T copy(T object) {
         try {
             @SuppressWarnings("uncehcked") T instance = (T) object.getClass().cast(_copy(object));
             return instance;
