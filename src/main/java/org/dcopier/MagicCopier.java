@@ -5,7 +5,7 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class MagicCopier implements DeepCopier{
+public class MagicCopier implements DeepCopier {
 
     private static class Holder {
         static final MagicCopier INSTANCE = new MagicCopier();
@@ -40,29 +40,26 @@ public class MagicCopier implements DeepCopier{
     private Object _copy(Object object) throws InstantiationException, IllegalAccessException {
         Class<?> aClass = object.getClass();
         Field[] fields = aClass.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isFinal(field.getModifiers())) {
-                throw new IllegalArgumentException("Cannot make a copy of a class with a final field");
-//                return withFinalField(aClass, fields);
-            }
-        }
 
         Object copy = U.allocateInstance(aClass);
-        copyFields(object, fields, copy);
-        return null;
+        for (Field field : fields) {
+            int mods = field.getModifiers();
+            if (Modifier.isStatic(mods)) continue;
+
+            field.setAccessible(true);
+            copyField(object, field, copy);
+            field.setAccessible(false);
+        }
+
+        return copy;
     }
 
-    private void copyFields(Object object, Field[] fields, Object copy) throws IllegalAccessException {
-        for (Field field : fields) {
-            long offset = U.objectFieldOffset(field);
-            field.setAccessible(true);
-
-            if (field.getType().isPrimitive()) {
-                copyPrimitive(object, field, offset, copy);
-            } else {
-                copyObject(object, field, offset, copy);
-            }
-            field.setAccessible(false);
+    private void copyField(Object object, Field field, Object copy) throws IllegalAccessException {
+        long offset = U.objectFieldOffset(field);
+        if (field.getType().isPrimitive()) {
+            copyPrimitive(object, field, offset, copy);
+        } else {
+            copyObject(object, field, offset, copy);
         }
     }
 
