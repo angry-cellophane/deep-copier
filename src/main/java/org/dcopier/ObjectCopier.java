@@ -1,7 +1,5 @@
 package org.dcopier;
 
-import com.sun.deploy.util.ReflectionUtil;
-import com.sun.imageio.plugins.common.ReaderUtil;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
