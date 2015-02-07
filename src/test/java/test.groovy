@@ -1,4 +1,4 @@
-import org.dcopier.OneField
+import org.dcopier.util.OneField
 
 def o = new Object()
 def f1 = new OneField(object: o)

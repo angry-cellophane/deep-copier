@@ -1,4 +1,4 @@
-package org.dcopier
+package org.dcopier.util
 
 
 class FinalFieldClass {
