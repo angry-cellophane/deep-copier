@@ -1,5 +1,6 @@
-package org.dcopier;
+package org.dcopier.shallow;
 
+import org.dcopier.CopyUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,7 @@ import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class JavaShallowCopyTest {
+public class ShallowCopyTest {
 
     @Parameters
     public static Collection<Object[]> data() {

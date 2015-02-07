@@ -1,4 +1,4 @@
-package org.dcopier.util
+package org.dcopier.util.shallow
 
 class OneField {
     Object object
