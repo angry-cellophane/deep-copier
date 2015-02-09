@@ -6,10 +6,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class ObjectCopier {
+public class ObjectCopier<T> {
 
     private static final Unsafe U;
     private static final Class<?> META_CLASS;
@@ -33,14 +32,22 @@ public class ObjectCopier {
     }
 
     private final boolean isShallow;
+    private final Object source;
+    private final Map<Object, Object> copyBySource;
 
-    public ObjectCopier(boolean isShallow) {
-        this.isShallow = isShallow;
+    public ObjectCopier(T source) {
+        this(source, true);
     }
 
-    public <T> T copy(T object) {
+    public ObjectCopier(T source, boolean isShallow) {
+        this.isShallow = isShallow;
+        this.source = source;
+        copyBySource = new HashMap<>();
+    }
+
+    public <T> T getCopy() {
         try {
-            @SuppressWarnings("unchecked") T instance = (T) object.getClass().cast(_copy(object, true));
+            @SuppressWarnings("unchecked") T instance = (T) source.getClass().cast(_copy(source, true));
             return instance;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -48,6 +55,11 @@ public class ObjectCopier {
     }
 
     private Object _copy(Object object, boolean isRoot) throws InstantiationException, IllegalAccessException {
+        if (!isRoot) {
+            Object copy = copyBySource.get(object);
+            if (copy != null) return copy;
+        }
+
         Class<?> aClass = object.getClass();
         if (object instanceof String) {
             return isShallow && !isRoot
@@ -65,6 +77,10 @@ public class ObjectCopier {
         }
 
         Object copy = U.allocateInstance(aClass);
+
+        if (!isRoot) {
+            copyBySource.put(object, copy);
+        }
 
         Field[] fields = getFields(aClass);
         for (Field field : fields) {
