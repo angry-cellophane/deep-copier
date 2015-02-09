@@ -55,10 +55,8 @@ public class ObjectCopier<T> {
     }
 
     private Object _copy(Object object, boolean isRoot) throws InstantiationException, IllegalAccessException {
-        if (!isRoot) {
-            Object copy = copyBySource.get(object);
-            if (copy != null) return copy;
-        }
+        Object copy = copyBySource.get(object);
+        if (copy != null) return copy;
 
         Class<?> aClass = object.getClass();
         if (object instanceof String) {
@@ -76,11 +74,9 @@ public class ObjectCopier<T> {
             return object;
         }
 
-        Object copy = U.allocateInstance(aClass);
+        copy = U.allocateInstance(aClass);
 
-        if (!isRoot) {
-            copyBySource.put(object, copy);
-        }
+        copyBySource.put(object, copy);
 
         Field[] fields = getFields(aClass);
         for (Field field : fields) {
